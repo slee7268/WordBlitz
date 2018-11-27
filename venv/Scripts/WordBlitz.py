@@ -8,7 +8,6 @@ scrabbleDict={
     "K": 5, "J": 8, "X": 8, "Q": 10, "Z":10
 }
 
-
 class Letter:
     def __init__(self, name, value, edgeList, multi=1):
         self.name=name
@@ -29,7 +28,7 @@ class Letter:
             print(i.end.name)
     def getNumNeighbors(self):
         print(len(self.edgeList))
-#manhsdtan
+
 class Edge:
     def __init__(self, start, end, weight):
         self.start=start
@@ -39,6 +38,7 @@ class Edge:
 class letterGrid:
     def __init__(self, size=4):
         self.size=size
+    #generate random Grid of Letter objects
     def genRandomGrid(self):
         #initialize 2d Array
         letterArr=[["fill" for i in range(self.size)] for j in range(self.size)]
@@ -48,8 +48,8 @@ class letterGrid:
                 letterArr[i][j]=Letter(randLetter, scrabbleDict[randLetter], [])
 
         letterArr=np.array(letterArr)
-
         return letterArr
+    #register edges
     def connectGrid(self, letterArr):
         for i in range(self.size):
             for j in range(self.size):
@@ -66,39 +66,11 @@ class letterGrid:
                     edge = Edge(letterArr[i][j], letterArr[i + 1][j-1], letterArr[i][j].value + letterArr[i + 1][j-1].value)
                     letterArr[i][j].addEdge(edge)
         return letterArr
-#register edges
 
-def score(path, grid):
-    return 100
-
-def BruteForce(grid):
-    return 1000
 
 def displayGrid(grid):
     letters=(list(l.name for row in grid for l in row))
-    #l for l in letters
     letterMat=np.reshape(letters, (4,4))
-        #np.array([[l for l in letters for i in range(4)] for j in range(4)])
     print(letterMat)
     return (letterMat)
-
-
-
-L1 = Letter("E", 2, [])
-L2=Letter("T", 3, [])
-L3=Letter("D", 3, [])
-E1=Edge(L1, L2, 5)
-E2=Edge(L1, L3, 5)
-L1.addEdge(E1)
-#L1.addEdge(E2)
-L2.getNeighbors()
-
-grid=letterGrid(4)
-randGrid=grid.genRandomGrid()
-randGrid=grid.connectGrid(randGrid)
-
-disp=displayGrid(randGrid)
-
-
-#print(disp[0,1].value)
 
