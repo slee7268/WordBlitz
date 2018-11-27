@@ -36,57 +36,54 @@ class Edge:
         self.weight=weight
 
 class letterGrid:
-    def __init__(self, size=4):
+    def __init__(self, letterArr, size=4):
         self.size=size
+        self.letterArr=[["fill" for i in range(self.size)] for j in range(self.size)]
     #generate random Grid of Letter objects
     def genRandomGrid(self):
         #initialize 2d Array
-        letterArr=[["fill" for i in range(self.size)] for j in range(self.size)]
         for i in range(self.size):
             for j in range(self.size):
                 randLetter=random.choice(string.ascii_uppercase)
-                letterArr[i][j]=Letter(randLetter, scrabbleDict[randLetter], [])
+                self.letterArr[i][j]=Letter(randLetter, scrabbleDict[randLetter], [])
 
-        letterArr=np.array(letterArr)
-        return letterArr
+        self.letterArr=np.array(self.letterArr)
+        return self.letterArr
     def genGrid(self, letters):
         # generates a grid from a list of letters
         for i in range(self.size):
             for j in range(self.size):
                 letters[i][j]=Letter(letters[i][j], scrabbleDict[letters[i][j]], [])
+        self.letterArr=letters
         return letters
     #register edges
-    def connectGrid(self, letterArr):
+    def connectGrid(self):
         for i in range(self.size):
             for j in range(self.size):
-                if(i+1<self.size):
-                    edge=Edge(letterArr[i][j], letterArr[i+1][j], letterArr[i][j].value + letterArr[i+1][j].value)
-                    letterArr[i][j].addEdge(edge)
-                if(j+1<self.size):
-                    edge = Edge(letterArr[i][j], letterArr[i][j+1], letterArr[i][j].value + letterArr[i][j+1].value)
-                    letterArr[i][j].addEdge(edge)
-                if(j+1< self.size & i+1<self.size):
-                    edge = Edge(letterArr[i][j], letterArr[i + 1][j+1], letterArr[i][j].value + letterArr[i + 1][j+1].value)
-                    letterArr[i][j].addEdge(edge)
-                if(i+1<self.size and j-1>0):
-                    edge = Edge(letterArr[i][j], letterArr[i + 1][j-1], letterArr[i][j].value + letterArr[i + 1][j-1].value)
-                    letterArr[i][j].addEdge(edge)
-        return letterArr
+                if (i + 1 < self.size):
+                    edge = Edge(self.letterArr[i][j], self.letterArr[i + 1][j],
+                                self.letterArr[i][j].value + self.letterArr[i + 1][j].value)
+                    self.letterArr[i][j].addEdge(edge)
+                if (j + 1 < self.size):
+                    edge = Edge(self.letterArr[i][j], self.letterArr[i][j + 1],
+                                self.letterArr[i][j].value + self.letterArr[i][j + 1].value)
+                    self.letterArr[i][j].addEdge(edge)
+                if (j + 1 < self.size & i + 1 < self.size):
+                    edge = Edge(self.letterArr[i][j], self.letterArr[i + 1][j + 1],
+                                self.letterArr[i][j].value + self.letterArr[i + 1][j + 1].value)
+                    self.letterArr[i][j].addEdge(edge)
+                if (i + 1 < self.size and j - 1 > 0):
+                    edge = Edge(self.letterArr[i][j], self.letterArr[i + 1][j - 1],
+                                self.letterArr[i][j].value + self.letterArr[i + 1][j - 1].value)
+                    self.letterArr[i][j].addEdge(edge)
+        return self
 
+    def displayGrid(self):
+        letters=(list(l.name for row in self.letterArr for l in row))
+        letterMat=np.reshape(letters, (4,4))
+        print(letterMat)
+        return (letterMat)
 
-def displayGrid(grid):
-    letters=(list(l.name for row in grid for l in row))
-    letterMat=np.reshape(letters, (4,4))
-    print(letterMat)
-    return (letterMat)
-
-
-letterTest1=[["A", "N", "A", "N"],
-         ["S", "I", "R", "E"],
-         ["R", "G", "U", "G"],
-         ["S", "U", "N", "D"]]
-
-grid=letterGrid(4)
-grid1=grid.genGrid(letterTest1)
-grid1=grid.connectGrid(grid1)
-displayGrid(grid1)
+class Path:
+    def __init__(self, charArr):
+        self.charArr=[]
