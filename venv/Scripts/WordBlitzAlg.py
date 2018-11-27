@@ -1,5 +1,16 @@
 from WordBlitz import *
 
+def score(path, grid):
+    return 100
+
+def BruteForce(grid):
+    return 1000
+
+def testCase1():
+    #from actual screenshot of the game
+    return 1
+
+
 L1 = Letter("E", 2, [])
 L2=Letter("T", 3, [])
 L3=Letter("D", 3, [])

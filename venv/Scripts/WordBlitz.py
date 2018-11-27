@@ -49,6 +49,12 @@ class letterGrid:
 
         letterArr=np.array(letterArr)
         return letterArr
+    def genGrid(self, letters):
+        # generates a grid from a list of letters
+        for i in range(self.size):
+            for j in range(self.size):
+                letters[i][j]=Letter(letters[i][j], scrabbleDict[letters[i][j]], [])
+        return letters
     #register edges
     def connectGrid(self, letterArr):
         for i in range(self.size):
@@ -74,3 +80,13 @@ def displayGrid(grid):
     print(letterMat)
     return (letterMat)
 
+
+letterTest1=[["A", "N", "A", "N"],
+         ["S", "I", "R", "E"],
+         ["R", "G", "U", "G"],
+         ["S", "U", "N", "D"]]
+
+grid=letterGrid(4)
+grid1=grid.genGrid(letterTest1)
+grid1=grid.connectGrid(grid1)
+displayGrid(grid1)
