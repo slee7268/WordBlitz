@@ -5,4 +5,5 @@ from a 4x4 matrix of letters with varying point values. The players' point value
 In this project, I'm looking to design an algorithm that finds the word with the highest point value the fastest.
 
 Framework and generating word matrix found in venv/Scripts/WordBlitz.py
+Algorithm is located at venv/Scripts/WordBlitz.py
 
