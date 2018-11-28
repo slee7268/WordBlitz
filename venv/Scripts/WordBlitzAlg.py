@@ -1,5 +1,7 @@
 from WordBlitz import *
 import random
+from lexpy.dawg import DAWG
+import pickle
 
 with open("words_alpha.txt") as f:
     words = [line.rstrip('\n') for line in f]
@@ -7,7 +9,23 @@ with open("words_alpha.txt") as f:
 
 words=[word for word in words if len(word)<=16 and len(word)>1]
 #364215 words after reducing to words of length 1-16
-print(words[0:10])
+
+#following code used to create DAWG and then pickle it
+"""
+dawg = DAWG()
+dawg.add_all(words)
+dawg.reduce()
+print(len(dawg))
+
+def save_object(obj, filename):
+    with open(filename, 'wb') as output:  # Overwrites any existing file.
+        pickle.dump(obj, output, pickle.HIGHEST_PROTOCOL)
+
+save_object(dawg, 'dawg.pkl')
+"""
+
+with open('dawg.pkl', 'rb') as input:
+    company1 = pickle.load(input)
 
 def score(path, grid):
     return 100
@@ -19,15 +37,20 @@ def RandWordSearch(grid):
     #start at random letter
     i=random.randint(0,3)
     j=random.randint(0,3)
-    #random Letter object
-    randLetter=grid.letterArr[i][j]
-    wordFound=False
+    #random start node
+    wordFound = False
+    word = grid.letterArr[i][j].name #initialize word (starts as a letter)
+    print(word)
     while(wordFound==False):
-        randNum=random.randint(0, len(randLetter.edgeList)-1)
-        #randomEdge
-        randEdge=randLetter.edgeList[randNum]
+        node = grid.letterArr[i][j]
+        randNum = random.randint(0, len(node.edgeList) - 1)
+        randEdge = node.edgeList[randNum]
+        nextLetter = randEdge.end
+        if(word+nextLetter.name in words):
+            word=word+nextLetter.name
+            wordFound=True
 
-    return 1
+    return word
 
 def testCase1():
     #from actual screenshot of the game
@@ -52,7 +75,7 @@ def testCase2():
     grid2.displayGrid()
     return grid2
 
-gridCase1=testCase1()
-#RandWordSearch(gridCase1)
+#gridCase1=testCase1()
+#print(RandWordSearch(gridCase1))
 
 #testCase2()
