@@ -27,7 +27,7 @@ save_object(dawg, 'dawg.pkl')
 with open('dawg.pkl', 'rb') as input:
     dawg = pickle.load(input)
 
-
+print(len(dawg))
 
 def score(path, grid):
     return 100
