@@ -9,7 +9,7 @@ with open("words_alpha.txt") as f:
 
 words=[word for word in words if len(word)<=16 and len(word)>1]
 #364215 words after reducing to words of length 1-16
-
+words=[x.upper() for x in words] #make all words in uppercase
 #following code used to create DAWG and then pickle it
 """
 dawg = DAWG()
@@ -23,11 +23,10 @@ def save_object(obj, filename):
 
 save_object(dawg, 'dawg.pkl')
 """
-
 with open('dawg.pkl', 'rb') as input:
     dawg = pickle.load(input)
 
-print(len(dawg))
+#dawg has 16117 nodes
 
 def score(path, grid):
     return 100
@@ -42,17 +41,22 @@ def RandWordSearch(grid):
     #random start node
     wordFound = False
     word = grid.letterArr[i][j].name #initialize word (starts as a letter)
-    print(word)
+    #print(word)
     while(wordFound==False):
         node = grid.letterArr[i][j]
         randNum = random.randint(0, len(node.edgeList) - 1)
         randEdge = node.edgeList[randNum]
         nextLetter = randEdge.end
-        if(word+nextLetter.name in words):
+        print(word+nextLetter.name)
+        if((dawg.search_with_prefix(word+nextLetter.name))!=None):
             word=word+nextLetter.name
+        #print(word)
+        if(word+nextLetter.name in dawg):
+            print("found one")
             wordFound=True
 
     return word
+
 
 def testCase1():
     #from actual screenshot of the game
@@ -77,7 +81,9 @@ def testCase2():
     grid2.displayGrid()
     return grid2
 
-#gridCase1=testCase1()
-#print(RandWordSearch(gridCase1))
+gridCase1=testCase1()
+print(RandWordSearch(gridCase1))
 
 #testCase2()
+
+
