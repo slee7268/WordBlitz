@@ -25,7 +25,9 @@ save_object(dawg, 'dawg.pkl')
 """
 
 with open('dawg.pkl', 'rb') as input:
-    company1 = pickle.load(input)
+    dawg = pickle.load(input)
+
+
 
 def score(path, grid):
     return 100
