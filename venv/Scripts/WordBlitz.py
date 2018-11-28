@@ -9,13 +9,14 @@ scrabbleDict={
 }
 
 class Letter:
-    def __init__(self, name, value, edgeList, multi=1):
+    def __init__(self, name, value, edgeList, degree, multi=1):
         self.name=name
         self.value=value
         self.edgeList=[]
         self.multi=multi
+        self.degree=0
     def dataOutput(self):
-        print("The Letter is: " +self.name+" The value is: " +str(self.value) + " The multiplier is: " + str(self.multi))
+        print("The Letter is: " +self.name+" The value is: " +str(self.value) + " The multiplier is: " + str(self.multi), "The Degree is: " +str(self.degree))
     def addEdge(self, edge):
         if(edge.start!=self):
             print("Can't add an Edge because start attribute does not match")
@@ -23,11 +24,11 @@ class Letter:
             self.edgeList.append(edge)
             edge1=Edge(edge.end, edge.start, edge.weight)
             edge.end.edgeList.append(edge1)
+            self.degree=self.degree+1
+            edge.end.degree=edge.end.degree+1
     def getNeighbors(self):
         for i in self.edgeList:
             print(i.end.name)
-    def getNumNeighbors(self):
-        print(len(self.edgeList))
 
 class Edge:
     def __init__(self, start, end, weight):
@@ -45,7 +46,7 @@ class letterGrid:
         for i in range(self.size):
             for j in range(self.size):
                 randLetter=random.choice(string.ascii_uppercase)
-                self.letterArr[i][j]=Letter(randLetter, scrabbleDict[randLetter], [])
+                self.letterArr[i][j]=Letter(randLetter, scrabbleDict[randLetter], [], 0)
 
         self.letterArr=np.array(self.letterArr)
         return self.letterArr
@@ -53,29 +54,42 @@ class letterGrid:
         # generates a grid from a list of letters
         for i in range(self.size):
             for j in range(self.size):
-                letters[i][j]=Letter(letters[i][j], scrabbleDict[letters[i][j]], [])
+                letters[i][j]=Letter(letters[i][j], scrabbleDict[letters[i][j]], [], 0)
         self.letterArr=letters
         return letters
     #register edges
     def connectGrid(self):
         for i in range(self.size):
             for j in range(self.size):
+                print(i, j)
                 if (i + 1 < self.size):
                     edge = Edge(self.letterArr[i][j], self.letterArr[i + 1][j],
                                 self.letterArr[i][j].value + self.letterArr[i + 1][j].value)
                     self.letterArr[i][j].addEdge(edge)
+
+                    print("connectDown")
                 if (j + 1 < self.size):
                     edge = Edge(self.letterArr[i][j], self.letterArr[i][j + 1],
                                 self.letterArr[i][j].value + self.letterArr[i][j + 1].value)
                     self.letterArr[i][j].addEdge(edge)
-                if (j + 1 < self.size & i + 1 < self.size):
+                    print("connectRight")
+                if (j + 1 < self.size and i + 1 < self.size):
                     edge = Edge(self.letterArr[i][j], self.letterArr[i + 1][j + 1],
                                 self.letterArr[i][j].value + self.letterArr[i + 1][j + 1].value)
                     self.letterArr[i][j].addEdge(edge)
-                if (i + 1 < self.size and j - 1 > 0):
+                    print("connectRDiagonalDown")
+                if (i + 1 < self.size and j - 1 >= 0):
                     edge = Edge(self.letterArr[i][j], self.letterArr[i + 1][j - 1],
                                 self.letterArr[i][j].value + self.letterArr[i + 1][j - 1].value)
                     self.letterArr[i][j].addEdge(edge)
+                    print("connnectLDiagonalDown")
+                """
+                if (i -1 >=0 and j +1 <self.size):
+                    edge = Edge(self.letterArr[i][j], self.letterArr[i - 1][j + 1],
+                                self.letterArr[i][j].value + self.letterArr[i - 1][j + 1].value)
+                    self.letterArr[i][j].addEdge(edge)
+                    print("connectRDiagonalUp")
+                """
         return self
 
     def displayGrid(self):

@@ -42,6 +42,7 @@ def RandWordSearch(grid):
     wordFound = False
     word = grid.letterArr[i][j].name #initialize word (starts as a letter)
     #print(word)
+    pathList=[[]]
     while(wordFound==False):
         node = grid.letterArr[i][j]
         randNum = random.randint(0, len(node.edgeList) - 1)
