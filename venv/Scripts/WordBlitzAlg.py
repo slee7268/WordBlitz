@@ -1,32 +1,7 @@
 from WordBlitz import *
 import random
-from lexpy.dawg import DAWG
-import pickle
 
-with open("words_alpha.txt") as f:
-    words = [line.rstrip('\n') for line in f]
-#370099 words in lexicon
 
-words=[word for word in words if len(word)<=16 and len(word)>1]
-#364215 words after reducing to words of length 1-16
-words=[x.upper() for x in words] #make all words in uppercase
-#following code used to create DAWG and then pickle it
-"""
-dawg = DAWG()
-dawg.add_all(words)
-dawg.reduce()
-print(len(dawg))
-
-def save_object(obj, filename):
-    with open(filename, 'wb') as output:  # Overwrites any existing file.
-        pickle.dump(obj, output, pickle.HIGHEST_PROTOCOL)
-
-save_object(dawg, 'dawg.pkl')
-"""
-with open('dawg.pkl', 'rb') as input:
-    dawg = pickle.load(input)
-
-#dawg has 16117 nodes
 
 def score(path, grid):
     return 100
@@ -35,29 +10,24 @@ def BruteForce(grid):
     return 1000
 
 def RandWordSearch(grid):
-    #start at random letter
-    i=random.randint(0,3)
-    j=random.randint(0,3)
-    #random start node
+    # prob need to search recursively
     wordFound = False
-    word = grid.letterArr[i][j].name #initialize word (starts as a letter)
+    word = grid.chooseRand().name #initialize word (starts as a letter)
     #print(word)
     pathList=[[]]
     while(wordFound==False):
-        node = grid.letterArr[i][j]
-        randNum = random.randint(0, len(node.edgeList) - 1)
-        randEdge = node.edgeList[randNum]
-        nextLetter = randEdge.end
+        node = grid.chooseRand()
+        nextLetter = node.randNeighbor()
         print(word+nextLetter.name)
         if((dawg.search_with_prefix(word+nextLetter.name))!=None):
             word=word+nextLetter.name
         #print(word)
+
         if(word+nextLetter.name in dawg):
-            print("found one")
+            print("found one that is " + str(len(word+nextLetter.name)) + " letters long")
             wordFound=True
 
     return word
-
 
 def testCase1():
     #from actual screenshot of the game
@@ -82,9 +52,11 @@ def testCase2():
     grid2.displayGrid()
     return grid2
 
-gridCase1=testCase1()
-print(RandWordSearch(gridCase1))
+#gridCase1=testCase1()
+#print(RandWordSearch(gridCase1))
 
+print("LOOK" not in dawg)
+print(dawg.search_with_prefix("NSE"))
 #testCase2()
 
 
