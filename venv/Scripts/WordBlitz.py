@@ -69,8 +69,9 @@ class Edge:
         self.weight=weight
 
 class letterGrid:
-    def __init__(self, letterArr, size=4):
+    def __init__(self, wordArr, letterArr,  size=4):
         self.size=size
+        self.wordArr=wordArr
         self.letterArr=[["fill" for i in range(self.size)] for j in range(self.size)]
     #generate random Grid of Letter objects
     def genRandomGrid(self):
@@ -140,35 +141,37 @@ class letterGrid:
         # random start node
         return self.letterArr[i][j]
 
-    def genWordsStart(self, i, j, word, wordArr):
+    def genWordsStart(self, i, j, word, wordArr, visited):
         #generate all valid words that start at index (i, j)
-        #initialize list to contain all words possible to be made from a start node
-
         #print(word)
+        visited[i][j]=True
         if word in dawg:
-            wordArr.append(word)
+            self.wordArr.append(word)
 
         for edge in self.letterArr[i][j].edgeList:
             next=edge.end.name
-            if((dawg.search_with_prefix(word+next))!=None):
+            if((dawg.search_with_prefix(word+next))!=None and visited[edge.end.i][edge.end.j]==False):
 
-                self.genWordsStart(edge.end.i, edge.end.j, word+next, wordArr)
+                self.genWordsStart(edge.end.i, edge.end.j, word+next, self.wordArr, visited)
                 #print(word+next)
         return
     def genAllWords(self):
-        wordArr=[]
+
         for i in range(self.size):
             for j in range(self.size):
-                self.genWordsStart(i, j, self.letterArr[i][j].name, wordArr)
-        return wordArr
+                visited = [[False for i in range(self.size)] for j in range(self.size)]
+                self.genWordsStart(i, j, self.letterArr[i][j].name, self.wordArr, visited)
+        return self.wordArr
 
 letterTest2 = [["S", "O", "L", "C"],
                    ["O", "F", "A", "U"],
                    ["L", "C", "E", "T"],
                    ["W", "O", "V", "O"]]
-grid = letterGrid(4)
+grid = letterGrid([], 4)
+print(grid.wordArr)
 grid2 = grid.genGrid(letterTest2)
 grid2 = grid.connectGrid()
 grid2.displayGrid()
 print(grid.genAllWords())
 print(len(grid.genAllWords()))
+
