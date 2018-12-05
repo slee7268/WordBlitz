@@ -3,6 +3,9 @@ import random
 from array import *
 import numpy as np
 import copy
+import operator
+from pprint import pprint
+
 scrabbleDict={
     "E" : 1, "A" : 1, "I" : 1, "O" : 1, "S" : 1, "N" : 1, "R" : 1, "T" : 1, "L" : 1, "U" : 1,
     "D" : 2, "G" : 2, "B" : 3, "C" : 3, "M" : 3, "P" : 3, "F": 4 , "H": 4, "V": 4, "W": 4, "Y": 4,
@@ -128,13 +131,7 @@ class letterGrid:
                                 self.letterArr[i][j].value + self.letterArr[i + 1][j - 1].value)
                     self.letterArr[i][j].addEdge(edge)
                     #print("connnectLDiagonalDown")
-                """
-                if (i -1 >=0 and j +1 <self.size):
-                    edge = Edge(self.letterArr[i][j], self.letterArr[i - 1][j + 1],
-                                self.letterArr[i][j].value + self.letterArr[i - 1][j + 1].value)
-                    self.letterArr[i][j].addEdge(edge)
-                    print("connectRDiagonalUp")
-                """
+
         return self
 
     def displayGrid(self):
@@ -156,41 +153,23 @@ class letterGrid:
 
     def genWordsStart(self, i, j, word, wordArr):
         #generate all valid words that start at index (i, j)
-        #print(word.string)
-        #print(np.matrix(visited))
-        print(word.path)
         if word.string in dawg:
             self.wordArr.append(word)
-            print("word found")
         for edge in self.letterArr[i][j].edgeList:
             next=edge.end.name
-            #print(word.path)
-            print(word.string + next)
             if((dawg.search_with_prefix(word.string+next))!=None and [edge.end.i, edge.end.j] not in word.path):
-                #print(word.path)
-                #newVisited=visited
-                #newVisited[edge.end.i][edge.end.j]=True
                 newPath=copy.deepcopy(word.path)
-                print(word.path)
                 newWord=Word(word.string+next, word.value+edge.end.value)
                 newWord.path=newPath
                 newWord.appendPath([edge.end.i, edge.end.j])
-                print(newWord.path)
                 self.genWordsStart(edge.end.i, edge.end.j, newWord, self.wordArr)
-                #print(word+next)
         return
     def genAllWords(self):
-
         for i in range(self.size):
             for j in range(self.size):
-                print("new letter Start")
-                print(self.letterArr[i][j].name)
                 word=Word(self.letterArr[i][j].name, self.letterArr[i][j].value)
                 word.path=[]
                 word.appendPath([i, j])
-                #rootLetter= Word(self.letterArr[i][j].name, self.letterArr[i][j].value)
-                #visited = [[False for i in range(self.size)] for j in range(self.size)]
-                #visited[i][j] = True
                 self.genWordsStart(i, j, word, self.wordArr)
         return self.wordArr
 
@@ -205,30 +184,20 @@ letterTest2 = [["S", "O", "L", "C"],
                    ["O", "F", "A", "U"],
                    ["L", "C", "E", "T"],
                    ["W", "O", "V", "O"]]
-"""
+
 letterTest2 = [["A", "N", "A", "N"],
                    ["S", "I", "R", "E"],
                    ["R", "G", "U", "G"],
                    ["S", "U", "N", "D"]]
 grid = letterGrid([], 4)
-print(grid.wordArr)
 
 grid2 = grid.genGrid(letterTest2)
 grid2 = grid.connectGrid()
-grid2.displayGrid()
+#grid2.displayGrid()
 words=grid.genAllWords()
+words.sort(key=operator.attrgetter("value"), reverse=True)
+"""
 
-
-#for i in range(len(words)):
-    #print(words[i].string)
-    #print(words[i].value)
-
-print(dawg.search_with_prefix("ACLO"))
-print(len(words))
-
-#how should I deal with non unique words
-#should I just take the word itself and calculate all possible ways of making the word and then computing a score
-#should I put the brute force result into a dawg so that future algorithms only search for words in the possible words?
 
 
 

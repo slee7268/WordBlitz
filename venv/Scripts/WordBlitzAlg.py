@@ -5,25 +5,34 @@ def score(path, grid):
     return 100
 
 def RandWordSearch(grid):
-    # prob better to search recursively
-    wordFound = False
-    word = grid.chooseRand().name #initialize word (starts as a letter)
-    #print(word)
-    pathList=[[]]
-    while(wordFound==False):
-        node = grid.chooseRand()
-        nextLetter = node.randNeighbor()
-        print(word+nextLetter.name)
-        if((dawg.search_with_prefix(word+nextLetter.name))!=None):
-            word=word+nextLetter.name
-        #print(word)
+    #choose random start node
+    i = random.randint(0, 3)
+    j = random.randint(0, 3)
+    print("The start letter is: " + grid.letterArr[i][j].name)
+    word=Word(grid.letterArr[i][j].name, grid.letterArr[i][j].value)
+    grid.genWordsStart(i, j, word, [])
+    return grid.wordArr
 
-        if(word+nextLetter.name in dawg):
-            print("found one that is " + str(len(word+nextLetter.name)) + " letters long")
-            wordFound=True
-
-    return word
+def findHighestLetter(grid):
+    #how should i handle ties
+    max=0
+    for letter in [y for x in grid.letterArr for y in x]:
+        if letter.value>max:
+            max=letter.value
+            startNode=letter
+    return startNode
+def findHighestNeighbor(startNode):
+    max=0
+    for edge in startNode.edgeList:
+        if(edge.end.value>max):
+            max=edge.end.value
+            neighbor=edge.end
+    return edge.end
 def GreedySearch(grid):
+    #find highest letter, follow edges with largest weights
+    words=[]
+    startNode=findHighestLetter(grid)
+    neighbor = findHighestNeighbor(startNode)
     return
 
 def testCase1():
@@ -32,7 +41,7 @@ def testCase1():
                    ["S", "I", "R", "E"],
                    ["R", "G", "U", "G"],
                    ["S", "U", "N", "D"]]
-    grid = letterGrid(4)
+    grid = letterGrid([],4)
     grid1 = grid.genGrid(letterTest1)
     grid1 = grid.connectGrid()
     grid1.displayGrid()
@@ -43,22 +52,21 @@ def testCase2():
                    ["O", "F", "A", "U"],
                    ["L", "C", "E", "T"],
                    ["W", "O", "V", "O"]]
-    grid = letterGrid(4)
+    grid = letterGrid([],4)
     grid2 = grid.genGrid(letterTest2)
     grid2 = grid.connectGrid()
     grid2.displayGrid()
     return grid2
 
-#gridCase1=testCase1()
-#print(RandWordSearch(gridCase1))
+gridCase1=testCase1()
+randWords=RandWordSearch(gridCase1)
+randWords.sort(key=operator.attrgetter("value"), reverse=True)
+print(randWords[0].string)
+
+print(findHighestNeighbor(findHighestLetter(gridCase1)).name)
 
 """
 with open('dawg.pkl', 'rb') as input:
     dawg = pickle.load(input)
 """
-x=[]
-x.append([1,4])
-print(x)
-x.append([1,3])
-print(x)
-print([1,4] in x)
+
