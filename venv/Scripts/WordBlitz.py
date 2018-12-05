@@ -186,6 +186,7 @@ class letterGrid:
                 print("new letter Start")
                 print(self.letterArr[i][j].name)
                 word=Word(self.letterArr[i][j].name, self.letterArr[i][j].value)
+                word.path=[]
                 word.appendPath([i, j])
                 #rootLetter= Word(self.letterArr[i][j].name, self.letterArr[i][j].value)
                 #visited = [[False for i in range(self.size)] for j in range(self.size)]
