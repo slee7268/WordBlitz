@@ -1,16 +1,11 @@
 from WordBlitz import *
 import random
 
-
-
 def score(path, grid):
     return 100
 
-def BruteForce(grid):
-    return 1000
-
 def RandWordSearch(grid):
-    # prob need to search recursively
+    # prob better to search recursively
     wordFound = False
     word = grid.chooseRand().name #initialize word (starts as a letter)
     #print(word)
@@ -28,6 +23,8 @@ def RandWordSearch(grid):
             wordFound=True
 
     return word
+def GreedySearch(grid):
+    return
 
 def testCase1():
     #from actual screenshot of the game
@@ -55,8 +52,13 @@ def testCase2():
 #gridCase1=testCase1()
 #print(RandWordSearch(gridCase1))
 
-print("LOOK" not in dawg)
-print(dawg.search_with_prefix("NSE"))
-#testCase2()
-
-
+"""
+with open('dawg.pkl', 'rb') as input:
+    dawg = pickle.load(input)
+"""
+x=[]
+x.append([1,4])
+print(x)
+x.append([1,3])
+print(x)
+print([1,4] in x)
